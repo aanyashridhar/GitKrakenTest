@@ -1,6 +1,8 @@
 // Ahana Sil, Aanya Shridhar, 12/4/2025
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Main {
 
@@ -33,7 +35,7 @@ public class Main {
 
         File outputFile = new File(
                 inputFile.getParent(),
-                base + "_capitalized" + ext
+                base + "_hashed" + ext
         );
 
         long startTime = System.nanoTime();  // Start timing
@@ -44,7 +46,8 @@ public class Main {
         ) {
             String line;
             while ((line = reader.readLine()) != null) {
-                writer.write(line.toUpperCase()); //Capitalizing all words
+                String hashed = heavyHash(line);
+                writer.write(hashed);
                 writer.newLine();
             }
 
@@ -58,5 +61,28 @@ public class Main {
 
         System.out.println("Created: " + outputFile.getAbsolutePath());
         System.out.println("Time taken: " + (timeTaken / 1_000_000.0) + " ms\n");
+    }
+
+    // CPU-INTENSIVE HASHING TASK
+    private static String heavyHash(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = input.getBytes();
+
+            // Do 1,000 rounds — you can increase this if needed
+            for (int i = 0; i < 1000; i++) {
+                hash = digest.digest(hash);
+            }
+
+            // Convert hash bytes to hex string
+            StringBuilder hex = new StringBuilder();
+            for (byte b : hash) {
+                hex.append(String.format("%02x", b));
+            }
+            return hex.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
