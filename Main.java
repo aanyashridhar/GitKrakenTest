@@ -14,9 +14,16 @@ public class Main {
             return;
         }
 
+        long startTime = System.nanoTime();  // Start timing all files
+
         for (String filePath : args) {
             processFile(filePath);
         }
+
+        long endTime = System.nanoTime();    // End timing all files
+        long totalTime = endTime - startTime;
+
+        System.out.println("Total time for all files: " + (totalTime / 1_000_000.0) + " ms");
     }
 
     private static void processFile(String filePath) {
@@ -38,8 +45,6 @@ public class Main {
                 base + "_hashed" + ext
         );
 
-        long startTime = System.nanoTime();  // Start timing
-
         try (
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))
@@ -56,11 +61,7 @@ public class Main {
             return;
         }
 
-        long endTime = System.nanoTime();   // End timing
-        long timeTaken = endTime - startTime;
-
         System.out.println("Created: " + outputFile.getAbsolutePath());
-        System.out.println("Time taken: " + (timeTaken / 1_000_000.0) + " ms\n");
     }
 
     // CPU-INTENSIVE HASHING TASK
